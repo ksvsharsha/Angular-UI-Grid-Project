@@ -15,6 +15,8 @@
   <body>
     <div ng-controller="MainCtrl">
       <br>
+      <input ng-model='filterValue'/><button ng-click='filter()'>Filter</button>
+
       <br>
       <div ui-grid="gridOptions" ui-grid-edit ui-grid-cellnav class="grid"></div>
     </div>
