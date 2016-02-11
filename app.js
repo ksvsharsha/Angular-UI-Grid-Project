@@ -1,13 +1,21 @@
-var app = angular.module('app', ['ngTouch', 'ui.grid','ui.grid.edit', 'ui.grid.cellNav']);
-app.controller('MainCtrl', ['$scope',  function ($scope) {
-  
+var app = angular.module('app', ['ngTouch', 'ui.grid','ui.grid','ui.grid.edit', 'ui.grid.cellNav', 'ui.grid.exporter', 'ui.grid.selection']);
+
+app.controller('MainCtrl', ['$scope', '$http', '$interval', '$q', function ($scope, $http, $interval, $q) {
+  var fakeI18n = function( title ){
+    var deferred = $q.defer();
+    $interval( function() {
+      deferred.resolve( 'col: ' + title );
+    }, 1000, 1);
+    return deferred.promise;
+  };
+
   $scope.gridOptions = {
-    enableFiltering: false,
-    onRegisterApi: function(gridApi){
-      $scope.gridApi = gridApi;
-      $scope.gridApi.grid.registerRowsProcessor( $scope.singleFilter, 200 );
-    },
-    columnDefs: [
+        enableFiltering: false,
+
+    exporterMenuCsv: false,
+    enableGridMenu: true,
+    gridMenuTitleFilter: fakeI18n,
+   columnDefs: [
       { name: 'SNo' ,enableCellEdit: false,width: '5%'},
       {name: 'ActivityDate',type:'date', cellFilter:'date:"yyyy-MM-dd"',width: '10%'},
       { name: 'EmployeeName' ,enableCellEdit:true ,width: '20%'},
@@ -41,19 +49,37 @@ app.controller('MainCtrl', ['$scope',  function ($scope) {
       ]},
       {name:'Comments',enableCellEdit:true, width:'20%'}
       
-      
     ],
-    data : [{SNo:"1",ActivityDate:"1stFeb,16",EmployeeName:"Shaik Abdul Rawoof",
+    gridMenuCustomItems: [
+      {
+        title: 'Rotate Grid',
+        action: function ($event) {
+          this.grid.element.toggleClass('rotated');
+        },
+        order: 210
+      }
+    ],
+     data : [{SNo:"1",ActivityDate:"1stFeb,16",EmployeeName:"Shaik Abdul Rawoof",
       Program:"1",SprintNumber:"Giza Sprint 5",SprintStartDate:"20-Jan-16",SprintEndDate:"2-Feb-16",
       Activity:"1",Category:"1",ReferenceID:"64778",Status:"1",Comments:"All Good"
       },
       {SNo:"2",ActivityDate:"2ndFeb16",EmployeeName:"Harsha",Program:"2",SprintNumber:"Giza Sprint 6",SprintStartDate:"10-feb-2016",
         SprintEndDate:"5-Feb-16",Activity:"2",Category:"2",ReferenceID:"438282",Status:"2",Comments:"Good"}],
-      enableCellEditOnFocus : true,
+    onRegisterApi: function( gridApi ){
+      $scope.gridApi = gridApi;
+      $scope.gridApi.grid.registerRowsProcessor( $scope.singleFilter, 200 );
 
+      // interval of zero just to allow the directive to have initialized
+      $interval( function() {
+        gridApi.core.addToGridMenu( gridApi.grid, [{ title: 'Dynamic item', order: 100}]);
+      }, 0, 1);
+
+      gridApi.core.on.columnVisibilityChanged( $scope, function( changedColumn ){
+        $scope.columnChanged = { name: changedColumn.colDef.name, visible: changedColumn.colDef.visible };
+      });
+    }
   };
-
-  $scope.filter = function() {
+$scope.filter = function() {
     $scope.gridApi.grid.refresh();
   };
     
@@ -72,6 +98,7 @@ app.controller('MainCtrl', ['$scope',  function ($scope) {
     });
     return renderableRows;
   };
+
 }])
 .filter('mapProgram', function() {
   var ProgramHash = {
@@ -141,4 +168,3 @@ app.controller('MainCtrl', ['$scope',  function ($scope) {
   };
 
 });
-
