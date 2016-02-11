@@ -7,18 +7,23 @@
     <script src="http://ui-grid.info/docs/grunt-scripts/csv.js"></script>
     <script src="http://ui-grid.info/docs/grunt-scripts/pdfmake.js"></script>
     <script src="http://ui-grid.info/docs/grunt-scripts/vfs_fonts.js"></script>
-    <script src="C:\Angular UI Project\bower-ui-grid-master\ui-grid.js"></script>
-    <link rel="stylesheet" type="text/css" href="C:\Angular UI Project\bower-ui-grid-master\ui-grid.css">
-    <link rel="stylesheet" type="text/css" href="C:\Angular UI Project\main.css">
-    <script src="C:\Angular UI Project\app.js"></script>
+    <script src="http://ui-grid.info/release/ui-grid.js"></script>
+    <link rel="stylesheet" href="http://ui-grid.info/release/ui-grid.css" type="text/css">
+    <link rel="stylesheet" href="main.css" type="text/css">
   </head>
   <body>
-    <div ng-controller="MainCtrl">
-      <br>
-      <input ng-model='filterValue'/><button ng-click='filter()'>Filter</button>
 
-      <br>
-      <div ui-grid="gridOptions" ui-grid-edit ui-grid-cellnav class="grid"></div>
-    </div>
+<div ng-controller="MainCtrl">
+  <br>
+        <input ng-model='filterValue'/><button ng-click='filter()'>Filter</button>
+
+  <div id="grid1" ui-grid="gridOptions" ui-grid-edit ui-grid-cellnav ui-grid-exporter ui-grid-selection class="grid"></div>
+  <div ng-if='columnChanged'>
+    Column Visibility Changed - name: {{ columnChanged.name }} visible: {{ columnChanged.visible }}
+  </div>
+</div>
+
+
+    <script src="app.js"></script>
   </body>
 </html>
