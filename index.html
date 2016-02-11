@@ -16,8 +16,11 @@
 <div ng-controller="MainCtrl">
   <br>
         <input ng-model='filterValue'/><button ng-click='filter()'>Filter</button>
+  <button type="button" id="addData" class="btn btn-success" ng-click="addData()">Add Data</button>
+  <button type="button" class="btn btn-success" ng-click="deleteSelected()">Delete Selected</button>
 
-  <div id="grid1" ui-grid="gridOptions" ui-grid-edit ui-grid-cellnav ui-grid-exporter ui-grid-selection class="grid"></div>
+
+  <div id="grid1" ui-grid="gridOptions" ui-grid-resize-columns ui-grid-move-columns ui-grid-pagination ui-grid-edit ui-grid-cellnav ui-grid-exporter ui-grid-selection class="grid"></div>
   <div ng-if='columnChanged'>
     Column Visibility Changed - name: {{ columnChanged.name }} visible: {{ columnChanged.visible }}
   </div>
