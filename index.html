@@ -8,6 +8,11 @@
     <script src="http://ui-grid.info/docs/grunt-scripts/pdfmake.js"></script>
     <script src="http://ui-grid.info/docs/grunt-scripts/vfs_fonts.js"></script>
     <script src="http://ui-grid.info/release/ui-grid.js"></script>
+    <script src="C:\Angular UI Project\taffydb-master\taffy.js"></script>
+   <link rel="stylesheet" href="C:\Angular UI Project\AdminLTE-2.3.0\plugins\datatables\dataTables.bootstrap.css">
+
+
+   
     <link rel="stylesheet" href="http://ui-grid.info/release/ui-grid.css" type="text/css">
     <link rel="stylesheet" href="main.css" type="text/css">
   </head>
@@ -15,12 +20,12 @@
 
 <div ng-controller="MainCtrl">
   <br>
-        <input ng-model='filterValue'/><button ng-click='filter()'>Filter</button>
+      
   <button type="button" id="addData" class="btn btn-success" ng-click="addData()">Add Data</button>
   <button type="button" class="btn btn-success" ng-click="deleteSelected()">Delete Selected</button>
+<br>
 
-
-  <div id="grid1" ui-grid="gridOptions" ui-grid-resize-columns ui-grid-move-columns ui-grid-pagination ui-grid-edit ui-grid-cellnav ui-grid-exporter ui-grid-selection class="grid"></div>
+  <div id="grid1" ui-grid="gridOptions" class="table table-bordered table-hover" ui-grid-resize-columns ui-grid-move-columns ui-grid-pagination ui-grid-edit ui-grid-cellnav ui-grid-exporter ui-grid-selection class="grid"></div>
   <div ng-if='columnChanged'>
     Column Visibility Changed - name: {{ columnChanged.name }} visible: {{ columnChanged.visible }}
   </div>
