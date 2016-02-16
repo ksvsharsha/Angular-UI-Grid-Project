@@ -1,6 +1,6 @@
-var app = angular.module('app', ['ngTouch', 'ngAnimate' ,'ui.grid','ui.grid.edit','ui.grid.resizeColumns', 'ui.grid.pagination','ui.grid.moveColumns', 'ui.grid.cellNav', 'ui.grid.exporter', 'ui.grid.selection']);
+var app = angular.module('app', ['ngTouch', 'ngAnimate' , 'ui.grid','ui.grid.edit','ui.grid.resizeColumns', 'ui.grid.pagination','ui.grid.moveColumns', 'ui.grid.cellNav', 'ui.grid.exporter', 'ui.grid.selection']);
 
-app.controller('MainCtrl', ['$scope', '$http', '$interval', '$q', function ($scope, $http, $interval, $q) {
+app.controller('MainCtrl', ['$scope', '$http', '$interval','uiGridConstants', '$q', function ($scope, $http, $interval, uiGridConstants,$q) {
   var fakeI18n = function( title ){
     var deferred = $q.defer();
     $interval( function() {
@@ -10,46 +10,74 @@ app.controller('MainCtrl', ['$scope', '$http', '$interval', '$q', function ($sco
   };
   var database = TAFFY().store("DAT");
 
+
 var getdata = database().get("DAT");
-//database({SNo:"1"}).update({EmployeeName:"asdfasdf sdg asdf asdf"});
-//getdata = database().get("DAT");
+
   $scope.msg = {};
   debugger;
+
   $scope.gridOptions = {
         enableFiltering: true,
-
+enableCellEditOnFocus : true,
     exporterMenuCsv: true,
     enableGridMenu: true,
     
    columnDefs: [
-      { name:'SNo', enableFiltering:false, enableCellEdit: false,width: '7%'
-      },
-      {name: 'ActivityDate',cellTooltip: 'Double Click To Edit',type:'date', cellFilter:'date:"yyyy-MM-dd"',width: '15%'},
-      { name: 'EmployeeName' ,enableCellEdit:true ,width: '20%',cellTooltip: 'Double Click To Edit'},
-      { name: 'Program',cellTooltip: 'Double Click To Edit',editableCellTemplate: 'ui-grid/dropdownEditor', width: '15%',
+      { name:'SNo', enableFiltering:false, enableCellEdit: false,width: '7%'},
+      {name: 'ActivityDate',enableFiltering:false,cellTooltip: false,enableCellEdit:true, type:'date', cellFilter:'date:"dd-MM-yyyy"',width: '15%'},
+      { name: 'EmployeeName' ,enableCellEdit:true ,width: '20%',cellTooltip: true},
+      { field: 'Program',enableFiltering:true,cellTooltip: true,
+      filter: {
+          //term: '3',
+          type: uiGridConstants.filter.SELECT,
+          selectOptions: [ { value: '1', label: 'IB Services - Spartan' }, { value: '2', label: 'CCD - MultiSpeciality' }, { value: '3', label: 'IB Services - Tejas'} ,{value:'4', label:'IB Services - WIIFIT'},{value:'5',label:'VOCAB Web Tool'} ,{value:'6', label:'Denials IQ - SQL'} ]
+        },
+        
+      
+      editableCellTemplate: 'ui-grid/dropdownEditor', width: '15%',headerCellClass: $scope.highlightFilteredHeader,
       cellFilter: 'mapProgram', editDropdownValueLabel: 'Program', editDropdownOptionsArray: [
       { id: 1, Program: 'IB Services - Spartan' },
       { id: 2, Program: 'CCD - MultiSpeciality' },
       { id: 3, Program:'IB Services - Tejas'  },
-      {id: 4, Program: 'IB Services - WIIFIT'}]},
-      { name: 'SprintNumber',enableCellEdit:true,width: '15%' ,cellTooltip: 'Double Click To Edit'},
-      {name:'SprintStartDate',cellTooltip: 'Double Click To Edit',type:'date', cellFilter:'date:"yyyy-MM-dd"',width: '15%'},
-      {name:'SprintEndDate',type:'date', cellFilter:'date:"yyyy-MM-dd"',width: '15%',cellTooltip: 'Double Click To Edit'},
-      {name:'Activity',editableCellTemplate: 'ui-grid/dropdownEditor', width: '10%',
-      cellFilter: 'mapActivity', editDropdownValueLabel: 'Activity',cellTooltip: 'Double Click To Edit', editDropdownOptionsArray: [
+      { id: 4, Program: 'IB Services - WIIFIT'},
+      { id: 5, Program: 'VOCAB Web Tool'},
+      { id: 6, Program: 'Denials IQ - SQL'}
+      ]},
+      { name: 'SprintNumber',enableCellEdit:true,width: '15%' ,cellTooltip: true},
+      {name:'SprintStartDate',enableFiltering:false,enableCellEdit:true, cellTooltip: false,type:'date', cellFilter:'date:"yyyy-MM-dd"',width: '15%'},
+      {name:'SprintEndDate',enableFiltering:false,type:'date', enableCellEdit:true, cellFilter:'date:"yyyy-MM-dd"',width: '15%',cellTooltip: false},
+      {name:'Activity',
+      filter: {
+          //term: '1',
+          type: uiGridConstants.filter.SELECT,
+          selectOptions: [ { value: '1', label: 'Coding' }, { value: '2', label: 'Testing' }, { value: '3', label: 'No Activity Assigned'}   ]
+        },
+      enableFiltering:true,editableCellTemplate: 'ui-grid/dropdownEditor', width: '10%',
+      cellFilter: 'mapActivity', editDropdownValueLabel: 'Activity',cellTooltip: true, editDropdownOptionsArray: [
       { id: 1, Activity: 'Coding' },
       { id: 2, Activity: 'Testing' },
-      { id: 3, Activity:'No Activity Assigned'  }
+      { id: 3, Activity:'No Activity Assigned'}
       ]},
-      {name:'Category',editableCellTemplate: 'ui-grid/dropdownEditor', width: '10%',cellTooltip: 'Double Click To Edit',
+      {name:'Category',enableFiltering:true,enableCellEdit:true,
+      filter: {
+          //term: '2',
+          type: uiGridConstants.filter.SELECT,
+          selectOptions: [ { value: '1', label: 'User Story' }, { value: '2', label: 'SPR' }, { value: '3', label: 'ALM Defect'}   ]
+        },
+      editableCellTemplate: 'ui-grid/dropdownEditor', width: '10%',cellTooltip: true,
       cellFilter: 'mapCategory', editDropdownValueLabel: 'Category', editDropdownOptionsArray: [
       { id: 1, Category: 'User Story' },
       { id: 2, Category: 'SPR' },
       { id: 3, Category:'ALM Defect'  }
       ]},
-      {name:'ReferenceID', enableCellEdit:true,width: '15%',cellTooltip: 'Double Click To Edit'},
-      {name:'Status',
-       editableCellTemplate: 'ui-grid/dropdownEditor', width: '10%',cellTooltip: 'Double Click To Edit',
+      {name:'ReferenceID', enableFiltering:true,enableCellEdit:true,width: '15%',cellTooltip: true},
+      {name:'Status',enableFiltering:true,enableCellEdit:true,
+      filter: {
+          //term: '3',
+          type: uiGridConstants.filter.SELECT,
+          selectOptions: [ { value: '1', label: 'On Track' }, { value: '2', label: 'Possibility of Risk' }, { value: '3', label: 'At Risk'}   ]
+        },
+       editableCellTemplate: 'ui-grid/dropdownEditor', width: '10%',cellTooltip: true,
        cellClass: function(grid,row,col,rowRenderIndex,colRenderIndex){
         if(row.entity.Status == 1)
           return "green";
@@ -67,7 +95,7 @@ var getdata = database().get("DAT");
       ]
 
     },
-      {name:'Comments',enableCellEdit:true, width:'20%',cellTooltip: 'Double Click To Edit'}
+      {name:'Comments',enableFiltering:false,enableCellEdit:true, width:'20%',cellTooltip: true}
       
     ],
     gridMenuCustomItems: [
@@ -180,7 +208,10 @@ $scope.filter = function() {
     1: 'IB Services - Spartan',
     2: 'CCD - MultiSpeciality',
     3: 'IB Services - Tejas',
-    4: 'IB Services - WIIFIT'
+    4: 'IB Services - WIIFIT',
+    5: 'VOCAB Web Tool',
+    6: 'Denials IQ - SQL'
+
   };
  
   return function(input) {
